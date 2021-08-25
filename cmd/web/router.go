@@ -9,13 +9,7 @@ import (
 )
 
 // routes create a routes function from external lib
-func routes(app *config.AppConfig) http.Handler {
-	// routes with pat lib
-	//mux := pat.New()
-	//
-	//mux.Get("/", http.HandlerFunc(handlers.Repo.Home))
-	//mux.Get("/about", http.HandlerFunc(handlers.Repo.About))
-
+func routes(_ *config.AppConfig) http.Handler {
 	// routes with chi lib
 	mux := chi.NewRouter()
 
@@ -27,5 +21,8 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/", handlers.Repo.Home)
 	mux.Get("/about", handlers.Repo.About)
 
+	// serving static file eg. image
+	fileServer := http.FileServer(http.Dir("./assets/"))
+	mux.Handle("/assets/*", http.StripPrefix("/assets", fileServer))
 	return mux
 }
